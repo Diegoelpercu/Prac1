@@ -2,25 +2,33 @@ package Dades;
 
 import java.util.Iterator;
 
+import Exceptions.ElementNoTrobat;
+import Exceptions.LlistaBuida;
+import Exceptions.PosicioInexistent;
+
 public class LlistaBase<T extends Comparable<T>> implements TADLlistaDE<T>, Iterator<T> {
 
- //Atributs
+    // Atributs
     private Node<T> primer;
     private Node<T> ultim;
-    private int nElem=0;    
-    private int posicioIterator=0;
-//Constructor
+    private int nElem = 0;
+    private int posicioIterator = 0;
+
+    // Constructor
     public LlistaBase() {
-        this.primer=null;
-        this.ultim=null;
+        this.primer = null;
+        this.ultim = null;
     }
-public int getnElem() {
+
+    public int getnElem() {
         return nElem;
     }
+
     public void setnElem(int nElem) {
         this.nElem = nElem;
     }
-    //Getters i Setters
+
+    // Getters i Setters
     public Node<T> getPrimer() {
         return primer;
     }
@@ -37,133 +45,131 @@ public int getnElem() {
         this.ultim = ultim;
     }
 
-//Metodes
+    // Metodes
 
-   
     public void inserir(T data) {
-       Node<T> node = new Node<T>(data, null ,null );
-       if (primer==null){    //Si la llista està buida
-           ultim=node;
-           primer=node;
-       }else {
+        Node<T> node = new Node<T>(data, null, null);
+        if (primer == null) { // Si la llista està buida
+            ultim = node;
+            primer = node;
+        } else {
             node.setAnterior(ultim);
             ultim.setSeguent(node);
-            ultim=node;
-       }
-       nElem++;
-       
+            ultim = node;
+        }
+        nElem++;
+
     }
 
-    public void inserir(int posicio, T data) {
-        
-        if (posicio>nElem || (posicio==nElem && primer!=null)){
+    public void inserir(int posicio, T data) throws PosicioInexistent {
 
-            System.out.println("No existeix aquesta posicio en la llista");//excepcio
-        }else{
-            Node<T> node = new Node<T>(data, null ,null );
-            if (primer==null){    //Si la llista està buida
-                ultim=node;
-                 primer=node;
-            }else {
-                if (posicio==0){    //Per a inserir en la posicio 0
+        if (posicio > nElem) {
+            throw new PosicioInexistent();
+        } else {
+            Node<T> node = new Node<T>(data, null, null);
+            if (primer == null) { // Si la llista està buida
+                ultim = node;
+                primer = node;
+            } else {
+                if (posicio == 0) { // Per a inserir en la posicio 0
                     node.setSeguent(primer);
-                    primer.setAnterior(node); 
-                    primer=node;
-                }else{
-                    Node<T> aux= primer;
-                    int counter=0;
-                    while (counter<posicio && aux.getSeguent() != null){
-                        aux= aux.getSeguent();
+                    primer.setAnterior(node);
+                    primer = node;
+                } else {
+                    Node<T> aux = primer;
+                    int counter = 0;
+                    while (counter < posicio && aux.getSeguent() != null) {
+                        aux = aux.getSeguent();
                         counter++;
                     }
-                        node.setAnterior(aux.getAnterior());
-                        node.setSeguent(aux);
-                        (aux.getAnterior()).setSeguent(node);   //Importa ordre amb el de baix!
-                        aux.setAnterior(node);
-                
-                }  
-                } nElem++;    //Si el posarem baix, quan no insertem també sumaríem 1 a nElem
+                    node.setAnterior(aux.getAnterior());
+                    node.setSeguent(aux);
+                    (aux.getAnterior()).setSeguent(node); // Importa ordre amb el de baix!
+                    aux.setAnterior(node);
+
+                }
+            }
+            nElem++; // Si el posarem baix, quan no insertem també sumaríem 1 a nElem
         }
     }
 
-
     public int longitud() {
-        return nElem;   
+        return nElem;
     }
 
-    public void esborrar(int posicio) {
+    public void esborrar(int posicio) throws LlistaBuida, PosicioInexistent {
 
-        if (primer == null || posicio>=nElem)  System.out.println("No es pot eliminar");//excepcio
-        else{
-            if (posicio==0){   //Si es vol eliminar el primer 
-                primer= primer.getSeguent();
-                primer.setAnterior(null);
-
-                }else{
-                    if(posicio==nElem-1){   //Si es vol eliminar l'ultim
-                        ultim= ultim.getAnterior();
+        if (primer == null)
+            throw new LlistaBuida();
+        else {
+            if (posicio >= nElem)
+                throw new PosicioInexistent();
+            else {
+                if (posicio == 0) { // Si es vol eliminar el primer
+                    primer = primer.getSeguent();
+                    primer.setAnterior(null);
+                } else {
+                    if (posicio == nElem - 1) { // Si es vol eliminar l'ultim
+                        ultim = ultim.getAnterior();
                         ultim.setAnterior(null);
-                    }else{
-                        Node<T> aux= primer;
-                        int counter=0;
-                        while (counter<posicio && aux.getSeguent() != null){
-                            aux= aux.getSeguent();
+                    } else {
+                        Node<T> aux = primer;
+                        int counter = 0;
+                        while (counter < posicio && aux.getSeguent() != null) {
+                            aux = aux.getSeguent();
                             counter++;
                         }
                         (aux.getAnterior()).setSeguent(aux.getSeguent());
                         (aux.getSeguent()).setAnterior(aux.getAnterior());
                     }
 
-                } nElem--;
+                }
+                nElem--;
             }
         }
-        
-    
+    }
 
-
-    public int buscar(T data) {
-
-        int nIteracions=0;
-        if (primer == null)  System.out.println("Llista buida");//Excepcio element no trobat
-        else{
-            Node<T> aux= primer;
-            boolean trobat= false;
-            while (nIteracions<this.nElem && !trobat){
+    public int buscar(T data) throws ElementNoTrobat {
+        boolean trobat = false;
+        int nIteracions = 0;
+        if (primer!= null) {
+            Node<T> aux = primer;
+            while (nIteracions < this.nElem && !trobat) {
+                if ((aux.getElem()).compareTo(data) == 0){
+                    return nIteracions; //Element trobat, retornem cost
+                }
+                aux = aux.getSeguent();
                 nIteracions++;
-                if((aux.getElem()).compareTo(data)==0) trobat=true;
-                aux=aux.getSeguent();
             }
-            if (!trobat) System.out.println("Element NO trobat");//Excepcio element no trobat
-            
-            if (trobat) System.out.println("Element SÍ trobat");
-            
-        }
-            return nIteracions;
+        }   //Element no trobat, donem pas a excepció
+            throw new ElementNoTrobat(nIteracions, nElem, primer); // Excepcio element no trobat
     }
 
-
-    public T obtenir(int posicio) {
-        if (primer == null) return null;//excepcio
-        if (posicio>=nElem) return null;//excepcio
-        else {
-            Node<T> aux= primer;
-            int counter=0;
-            while (counter<posicio && aux.getSeguent() != null){
-                aux= aux.getSeguent();
-                counter++;
-            }
+    public T obtenir(int posicio) throws LlistaBuida, PosicioInexistent {
+        if (primer == null) {
+            throw new LlistaBuida();
+        } else {
+            if (posicio >= nElem) {
+                throw new PosicioInexistent();
+            } else {
+                Node<T> aux = primer;
+                int counter = 0;
+                while (counter < posicio && aux.getSeguent() != null) {
+                    aux = aux.getSeguent();
+                    counter++;
+                }
                 return aux.getElem();
-            
+            }
         }
     }
 
-    public LlistaBase<T> copiaIterable  (){   //Clonem llista original per no maxacar-la
-		LlistaBase<T> llistaClone = new LlistaBase<T>();
-        Node<T> aux= this.getPrimer();
-        int counter=0;
-        while (counter<this.getnElem()){
-           llistaClone.inserir(aux.getElem());
-            aux= aux.getSeguent();
+    public LlistaBase<T> copiaIterable() { // Clonem llista original per no maxacar-la
+        LlistaBase<T> llistaClone = new LlistaBase<T>();
+        Node<T> aux = this.getPrimer();
+        int counter = 0;
+        while (counter < this.getnElem()) {
+            llistaClone.inserir(aux.getElem());
+            aux = aux.getSeguent();
             counter++;
         }
         return llistaClone;
@@ -171,14 +177,15 @@ public int getnElem() {
 
     @Override
     public boolean hasNext() {
-        return (posicioIterator<this.getnElem() && this.obtenir(posicioIterator)!= null);
+        return (posicioIterator < this.getnElem() && this.obtenir(posicioIterator) != null);
 
     }
+
     @Override
     public T next() {
-        T aux= this.obtenir(posicioIterator);
+        T aux = this.obtenir(posicioIterator);
         posicioIterator++;
-         return aux;
+        return aux;
     }
-    
+
 }

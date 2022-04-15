@@ -2,15 +2,14 @@ package Dades;
 
 public class Node<T> {
 
-    //Atributs
+    // Atributs
     private Node<T> seguent, anterior;
     private T dades;
 
-
-    public Node (T dades, Node<T> seguent, Node<T> anterior){
-        this.dades=dades;
-        this.seguent=seguent;
-        this.anterior=anterior;
+    public Node(T dades, Node<T> seguent, Node<T> anterior) {
+        this.dades = dades;
+        this.seguent = seguent;
+        this.anterior = anterior;
     }
 
     public Node<T> getAnterior() {
