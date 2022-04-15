@@ -2,7 +2,7 @@ package Dades;
 
 import java.util.Iterator;
 
-public class LlistaBase<T extends Comparable<T>> implements TADLlistaDE<T>, Iterator<T> {
+public class LlistaBase<T extends Comparable<T>> implements TADLlistaDE<T>, Iterable<T> {
 
  //Atributs
     private Node<T> primer;
@@ -39,7 +39,7 @@ public int getnElem() {
 //Metodes
 
    
-    public void Inserir(T data) {
+    public void inserir(T data) {
        Node<T> node = new Node<T>(data, null ,null );
        if (primer==null){    //Si la llista està buida
            ultim=node;
@@ -53,7 +53,7 @@ public int getnElem() {
        
     }
 
-    public void Inserir(int posicio, T data) {
+    public void inserir(int posicio, T data) {
         
         if (posicio>nElem || (posicio==nElem && primer!=null)){
 
@@ -86,11 +86,11 @@ public int getnElem() {
     }
 
 
-    public int Longitud() {
+    public int longitud() {
         return nElem;   
     }
 
-    public void Esborrar(int posicio) {
+    public void esborrar(int posicio) {
 
         if (primer == null || posicio>=nElem)  System.out.println("No es pot eliminar");//excepcio
         else{
@@ -120,22 +120,28 @@ public int getnElem() {
     
 
 
-    public int Buscar(T data) {
-        int nElem=0;
-        int counter=0;
-        Node<T> aux= primer;
-        while (counter<this.nElem && aux.getSeguent() != null && (aux.getElem()).compareTo(data)==0){
-           aux=aux.getSeguent();
-           nElem++;
+    public int buscar(T data) {
+
+        int nIteracions=0;
+        if (primer == null)  System.out.println("Llista buida");//Excepcio element no trobat
+        else{
+            Node<T> aux= primer;
+            boolean trobat= false;
+            while (nIteracions<this.nElem && !trobat){
+                nIteracions++;
+                if((aux.getElem()).compareTo(data)==0) trobat=true;
+                aux=aux.getSeguent();
+            }
+            if (!trobat) System.out.println("Element NO trobat");//Excepcio element no trobat
+            
+            if (trobat) System.out.println("Element SÍ trobat");
+            
         }
-        if ((aux.getElem()).compareTo(data)!=0) System.out.println("Element no trobat");
-        //Excepcio element no trobat
-        
-        return nElem;
+            return nIteracions;
     }
 
 
-    public T Obtenir(int posicio) {
+    public T obtenir(int posicio) {
         if (primer == null) return null;//excepcio
         if (posicio>=nElem) return null;//excepcio
         else {
@@ -150,13 +156,9 @@ public int getnElem() {
         }
     }
 
-    public boolean hasNext() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-    public T next() {
-        // TODO Auto-generated method stub
-        return null;
+    public Iterator<T> iterator() {
+        LlistaIterator<T> llistaIte= new LlistaIterator<T>(this); //Estem creant i retornant un objecte amb el constructor de LlistaIterator, el qual crea una còpia de la llistaBase de tipus LlistaIterator, amb la qual podres usar next i hasNext
+        return llistaIte;
     }
     
 }

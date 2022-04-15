@@ -8,7 +8,7 @@ public interface TADLlistaDE<T> {
      * Funció per tal d’inserir un element al final de la llista
      * @param data
      */
-    void Inserir (T data);
+    void inserir (T data);
 
 
     /**
@@ -17,7 +17,7 @@ public interface TADLlistaDE<T> {
      * @param posició
      * @param data
      */
-    void Inserir(int posició, T data);
+    void inserir(int posició, T data);
 
 
     /**
@@ -26,14 +26,14 @@ public interface TADLlistaDE<T> {
      * @param posició
      * @return elem 
      */
-    T Obtenir(int posició);
+    T obtenir(int posició);
 
 
     /**
      * Retorna el nombre d’elements que conté la llista en aquest moment
      * @return nElem 
      */
-    int Longitud();
+    int longitud();
 
 
     /**
@@ -41,7 +41,7 @@ public interface TADLlistaDE<T> {
      * L’operació llença una excepció en cas que no es pugui eliminar
      *  @param posició
      */
-    void Esborrar(int posició);
+    void esborrar(int posició);
 
 
     /**
@@ -54,5 +54,5 @@ public interface TADLlistaDE<T> {
      * @param data
      * @return cost (nElem)
      */
-    int Buscar(T data);
+    int buscar(T data);
 }
