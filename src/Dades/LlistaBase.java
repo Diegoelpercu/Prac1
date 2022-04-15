@@ -2,12 +2,13 @@ package Dades;
 
 import java.util.Iterator;
 
-public class LlistaBase<T extends Comparable<T>> implements TADLlistaDE<T>, Iterable<T> {
+public class LlistaBase<T extends Comparable<T>> implements TADLlistaDE<T>, Iterator<T> {
 
  //Atributs
     private Node<T> primer;
     private Node<T> ultim;
     private int nElem=0;    
+    private int posicioIterator=0;
 //Constructor
     public LlistaBase() {
         this.primer=null;
@@ -156,9 +157,28 @@ public int getnElem() {
         }
     }
 
-    public Iterator<T> iterator() {
-        LlistaIterator<T> llistaIte= new LlistaIterator<T>(this); //Estem creant i retornant un objecte amb el constructor de LlistaIterator, el qual crea una còpia de la llistaBase de tipus LlistaIterator, amb la qual podres usar next i hasNext
-        return llistaIte;
+    public LlistaBase<T> copiaIterable  (){   //Clonem llista original per no maxacar-la
+		LlistaBase<T> llistaClone = new LlistaBase<T>();
+        Node<T> aux= this.getPrimer();
+        int counter=0;
+        while (counter<this.getnElem()){
+           llistaClone.inserir(aux.getElem());
+            aux= aux.getSeguent();
+            counter++;
+        }
+        return llistaClone;
+    }
+
+    @Override
+    public boolean hasNext() {
+        return (posicioIterator<this.getnElem() && this.obtenir(posicioIterator)!= null);
+
+    }
+    @Override
+    public T next() {
+        T aux= this.obtenir(posicioIterator);
+        posicioIterator++;
+         return aux;
     }
     
 }
