@@ -9,7 +9,7 @@ import Exceptions.PosicioInexistent;
 public class App {
     public static <T> void main(String[] args) throws Exception {
 
-        
+
         // ******************************************** TEST INSERIR al final,OBTENIR i ITERATOR *****************************
 
 
