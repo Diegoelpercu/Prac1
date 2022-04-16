@@ -3,6 +3,7 @@ package Dades;
 import Exceptions.LlistaBuida;
 import Exceptions.PosicioInexistent;
 import Exceptions.ElementNoTrobat;
+
 public interface TADLlistaDE<T> {
 
   /**
