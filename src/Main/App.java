@@ -2,18 +2,27 @@ package Main;
 
 import Dades.Ciutada;
 import Dades.LlistaBase;
+import Exceptions.ElementNoTrobat;
+import Exceptions.LlistaBuida;
+import Exceptions.PosicioInexistent;
 
 public class App {
     public static <T> void main(String[] args) throws Exception {
 
+        
         // ******************************************** TEST INSERIR al final,OBTENIR i ITERATOR *****************************
 
-        System.out.println("TEST INSERIR al final, OBTENIR i ITERATOR\n");
+
+        System.out.println("\nTEST INSERIR al final, OBTENIR i ITERATOR\n");
 
         LlistaBase<Integer> llista = new LlistaBase<Integer>();
 
         // Obtenir
-        System.out.println("valor " + llista.obtenir(0)); // Amb llista buida
+        try {
+            System.out.println("valor " + llista.obtenir(0)); // Amb llista buida. Excepció
+        } catch (LlistaBuida e) {
+            System.out.println(e);
+        }
 
         // Inserir
         llista.inserir(1);
@@ -28,13 +37,17 @@ public class App {
         llista.inserir(5);
 
         // Obtenir
-        System.out.println("\nvalor " + llista.obtenir(0)); // Valor 1
-        System.out.println("valor " + llista.obtenir(1)); // Valor 2
-        System.out.println("valor " + llista.obtenir(2)); // Valor 3
-        System.out.println("valor " + llista.obtenir(3)); // Valor 4
-        System.out.println("valor " + llista.obtenir(4)); // Valor 5
-        System.out.println("valor " + llista.obtenir(5)); // Excepció, no hi ha element
-        System.out.println("\n");
+        try {
+            System.out.println("\nvalor " + llista.obtenir(0)); // Valor 1
+            System.out.println("valor " + llista.obtenir(1)); // Valor 2
+            System.out.println("valor " + llista.obtenir(2)); // Valor 3
+            System.out.println("valor " + llista.obtenir(3)); // Valor 4
+            System.out.println("valor " + llista.obtenir(4)); // Valor 5
+            System.out.println("valor " + llista.obtenir(5)); // Excepció, no hi ha element
+            System.out.println("\n\n");
+        } catch (PosicioInexistent e) {
+            System.out.println(e + "\n");
+        }
 
         // Iterator
         LlistaBase<Integer> llistaIteratorInt = new LlistaBase<Integer>();
@@ -44,19 +57,32 @@ public class App {
             System.out.println(llistaIteratorInt.next().toString());
         }
 
-        // ******************************************  TEST INSERIR EN POSICIO I ITERATOR  ****************************
+
+        // ****************************************** TEST INSERIR EN POSICIO I ITERATOR ****************************
+
 
         System.out.println("\nTEST INSERIR EN POSICIO\n");
 
         LlistaBase<String> llistaPos = new LlistaBase<String>();
-        llistaPos.inserir(1, "H"); // No existeix posició
+        try {
+            llistaPos.inserir(1, "H"); // Excepció. No existeix posició
+        } catch (PosicioInexistent e) {
+            System.out.println(e);
+        }
         llistaPos.inserir(0, "B");
         System.out.println("valor en pos 0 " + llistaPos.obtenir(0)); // Inserim "B" en posicio 0
         llistaPos.inserir(0, "A");
-        System.out.println("valor en pos 0 " + llistaPos.obtenir(0)); // Inserim "A" en posicio 0. Per tant queda "A" en posicio 0 i "B" en posicio 1
-        System.out.println("valor en pos 1 " + llistaPos.obtenir(1)); // "B"
+        System.out.println("valor en pos 0 " + llistaPos.obtenir(0)); // Inserim "A" en posicio 0. Per tant queda "A" en
+                                                                      // posicio 0 i "B" en posicio 1
+        System.out.println("valor en pos 1 " + llistaPos.obtenir(1)); // "Printem B"
 
-        llistaPos.inserir(1, "C");
+        try {
+            llistaPos.inserir(2, "C"); // Excepció. Posició no es troba en la llista
+        } catch (PosicioInexistent e) {
+            System.out.println(e);
+        }
+
+        llistaPos.inserir(1, "C"); // Inserim "C" en posició 1. Quedant, doncs, el següent ordre: "A","C","B"
         System.out.println("\nvalor en pos 1 " + llistaPos.obtenir(1)); // "C"
 
         LlistaBase<String> llistaIteratorPos = new LlistaBase<String>();
@@ -65,7 +91,9 @@ public class App {
             System.out.println(llistaIteratorPos.next().toString());
         }
 
-        // *******************************************  TEST LONGITUD  *********************************************************************
+
+        // ******************************************* TEST LONGITUD  *********************************************************************
+
 
         System.out.println("\nTEST LONGITUD\n");
         LlistaBase<String> llistaBuida = new LlistaBase<String>();
@@ -73,11 +101,13 @@ public class App {
         System.out.println("nElem=" + llistaPos.longitud()); // 3 elements
         System.out.println("nElem=" + llistaBuida.longitud()); // 0 elements, llista buida
 
-        // *************************  TEST ESBORRAR (treballem amb la pirmera llista creada)  *******************************************
+
+        // ************************* TEST ESBORRAR (treballem amb la pirmera llista creada) *******************************************
+
 
         System.out.println("\nTEST ESBORRAR (treballem amb la pirmera llista creada)\n");
 
-        llista.esborrar(0); // Esborrem primera posicio (esborrem el 0)
+        llista.esborrar(0); // Esborrem primera posicio (esborrem el 1)
 
         llistaIteratorInt = llista.copiaIterable();
         while (llistaIteratorInt.hasNext()) { // Printem 2,3,4,5
@@ -102,22 +132,52 @@ public class App {
             System.out.println(llistaIteratorInt.next().toString());
         }
 
-        // ***************************  TEST BUSCAR (i compareTo) amb T=Integer  ********************************************************
+        try {
+            llista.esborrar(2); // Esborrem posició inexistent. Excepció
+        } catch (PosicioInexistent e) {
+            System.out.println(e);
+        }
+
+        llista.esborrar(1); // Esborrem posició 1
+        llista.esborrar(0); // Esborrem posició 0
+
+            while (llistaIteratorInt.hasNext()) { // Llista buida. Excepcio
+                System.out.println(llistaIteratorInt.next().toString());
+            }
+
+        try {
+            llista.esborrar(0); // Esborrem posició 0 de llista buida. Excepeció
+        } catch (LlistaBuida e) {
+            System.out.println(e);
+        }
+
+
+        // *************************** TEST BUSCAR (i compareTo) amb T=Integer  ********************************************************
+
 
         System.out.println("\nTEST BUSCAR (amb Integer, String i Ciutada)\n");
 
         LlistaBase<Integer> llistaBuscar = new LlistaBase<Integer>();
-        System.out.println("\nNombre iteracions=" + llistaBuscar.buscar(2)); // No trobat amb 0 iteracions. Llista buida
-
+        try {
+            System.out.println("\nNombre iteracions=" + llistaBuscar.buscar(2)); // No trobat amb 0 iteracions. Llista buida                                                                     
+        } catch (ElementNoTrobat e) {
+            System.out.println(e);
+        }
         llistaBuscar.inserir(1);
         llistaBuscar.inserir(2);
         llistaBuscar.inserir(3);
         System.out.println("Nombre iteracions=" + llistaBuscar.buscar(1)); // Sí trobat amb 1 iteració
         System.out.println("Nombre iteracions=" + llistaBuscar.buscar(2)); // Sí trobat amb 2 iteracions
         System.out.println("Nombre iteracions=" + llistaBuscar.buscar(3)); // Sí trobat amb 3 iteracions
-        System.out.println("Nombre iteracions=" + llistaBuscar.buscar(4)); // NO trobat amb 3 iteracions*/
+        try {
+            System.out.println("Nombre iteracions=" + llistaBuscar.buscar(4)); // NO trobat amb 3 iteracions*/
+        } catch (ElementNoTrobat e) {
+            System.out.println(e);
+        }
+
 
         // ***********************************  TEST COMPARETO CIUTADA  ****************************************************************
+
 
         System.out.println("\nTEST COMPARETO CIUTADA\n");
         LlistaBase<Ciutada> llistaCiutada = new LlistaBase<Ciutada>();
@@ -131,7 +191,9 @@ public class App {
         System.out.println("Nombre iteracions=" + llistaCiutada.buscar(ciutada2)); // Sí trobat amb 2 iteracions
         System.out.println("Nombre iteracions=" + llistaCiutada.buscar(ciutada3)); // Sí trobat amb 3 iteracions
 
-        // **************************************  TEST COPIAITERABLE  ****************************************************************
+
+        // **************************************  TEST COPIAITERABLE  ***************************************************************
+
 
         System.out.println("\nTEST COPIAITERABLE\n");
         LlistaBase<Ciutada> llistaIterator = new LlistaBase<Ciutada>();
@@ -140,6 +202,6 @@ public class App {
                                                         // treballem amb ella amb next i hasNext per poder iterar
                                                         // còmodament
 
-        System.out.println("\n\nvalor " + llistaIterator.obtenir(2)); // ciutada3
+        System.out.println("valor " + llistaIterator.obtenir(2)); // ciutada3
     }
 }

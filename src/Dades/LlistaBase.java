@@ -63,7 +63,7 @@ public class LlistaBase<T extends Comparable<T>> implements TADLlistaDE<T>, Iter
 
     public void inserir(int posicio, T data) throws PosicioInexistent {
 
-        if (posicio > nElem) {
+        if (posicio > nElem || (posicio == nElem && primer != null)) {
             throw new PosicioInexistent();
         } else {
             Node<T> node = new Node<T>(data, null, null);
@@ -105,24 +105,28 @@ public class LlistaBase<T extends Comparable<T>> implements TADLlistaDE<T>, Iter
             if (posicio >= nElem)
                 throw new PosicioInexistent();
             else {
-                if (posicio == 0) { // Si es vol eliminar el primer
-                    primer = primer.getSeguent();
-                    primer.setAnterior(null);
+                if (primer == ultim) { // Si es vol eliminar l'únic element d'una llista amb 1 element
+                    primer = null;
+                    ultim = null;
                 } else {
-                    if (posicio == nElem - 1) { // Si es vol eliminar l'ultim
-                        ultim = ultim.getAnterior();
-                        ultim.setAnterior(null);
+                    if (posicio == 0) { // Si es vol eliminar el primer
+                        primer = primer.getSeguent();
+                        primer.setAnterior(null);
                     } else {
-                        Node<T> aux = primer;
-                        int counter = 0;
-                        while (counter < posicio && aux.getSeguent() != null) {
-                            aux = aux.getSeguent();
-                            counter++;
+                        if (posicio == nElem - 1) { // Si es vol eliminar l'ultim
+                            ultim = ultim.getAnterior();
+                            ultim.setAnterior(null);
+                        } else {
+                            Node<T> aux = primer;
+                            int counter = 0;
+                            while (counter < posicio && aux.getSeguent() != null) {
+                                aux = aux.getSeguent();
+                                counter++;
+                            }
+                            (aux.getAnterior()).setSeguent(aux.getSeguent());
+                            (aux.getSeguent()).setAnterior(aux.getAnterior());
                         }
-                        (aux.getAnterior()).setSeguent(aux.getSeguent());
-                        (aux.getSeguent()).setAnterior(aux.getAnterior());
                     }
-
                 }
                 nElem--;
             }
@@ -132,17 +136,17 @@ public class LlistaBase<T extends Comparable<T>> implements TADLlistaDE<T>, Iter
     public int buscar(T data) throws ElementNoTrobat {
         boolean trobat = false;
         int nIteracions = 0;
-        if (primer!= null) {
+        if (primer != null) {
             Node<T> aux = primer;
             while (nIteracions < this.nElem && !trobat) {
-                if ((aux.getElem()).compareTo(data) == 0){
-                    return nIteracions; //Element trobat, retornem cost
+                if ((aux.getElem()).compareTo(data) == 0) {
+                    return nIteracions + 1; // Element trobat, retornem cost
                 }
                 aux = aux.getSeguent();
                 nIteracions++;
             }
-        }   //Element no trobat, donem pas a excepció
-            throw new ElementNoTrobat(nIteracions, nElem, primer); // Excepcio element no trobat
+        } // Element no trobat, donem pas a excepció
+        throw new ElementNoTrobat(nIteracions, nElem, primer); // Excepcio element no trobat
     }
 
     public T obtenir(int posicio) throws LlistaBuida, PosicioInexistent {
@@ -175,17 +179,31 @@ public class LlistaBase<T extends Comparable<T>> implements TADLlistaDE<T>, Iter
         return llistaClone;
     }
 
-    @Override
     public boolean hasNext() {
-        return (posicioIterator < this.getnElem() && this.obtenir(posicioIterator) != null);
+
+        try {
+            if (posicioIterator < this.getnElem() && this.obtenir(posicioIterator) != null)
+                return true;
+        } catch (LlistaBuida e) {
+            System.out.println(e);
+        } catch (PosicioInexistent e) {
+            System.out.println(e);
+        }
+        return false;
 
     }
 
-    @Override
     public T next() {
-        T aux = this.obtenir(posicioIterator);
-        posicioIterator++;
-        return aux;
+        try {
+            T aux = this.obtenir(posicioIterator);
+            posicioIterator++;
+            return aux;
+        } catch (LlistaBuida e) {
+            System.out.println(e);
+        } catch (PosicioInexistent e) {
+            System.out.println(e);
+        }
+        return null;
     }
 
 }
