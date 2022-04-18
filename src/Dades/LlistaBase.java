@@ -115,7 +115,7 @@ public class LlistaBase<T extends Comparable<T>> implements TADLlistaDE<T>, Iter
                     } else {
                         if (posicio == nElem - 1) { // Si es vol eliminar l'ultim
                             ultim = ultim.getAnterior();
-                            ultim.setAnterior(null);
+                            ultim.setSeguent(null);
                         } else {
                             Node<T> aux = primer;
                             int counter = 0;
@@ -134,11 +134,10 @@ public class LlistaBase<T extends Comparable<T>> implements TADLlistaDE<T>, Iter
     }
 
     public int buscar(T data) throws ElementNoTrobat {
-        boolean trobat = false;
         int nIteracions = 0;
         if (primer != null) {
             Node<T> aux = primer;
-            while (nIteracions < this.nElem && !trobat) {
+            while (nIteracions < this.nElem) {
                 if ((aux.getElem()).compareTo(data) == 0) {
                     return nIteracions + 1; // Element trobat, retornem cost
                 }
